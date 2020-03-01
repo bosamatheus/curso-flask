@@ -1,6 +1,5 @@
 from app import db
 
-
 class User(db.Model):
     __tablename__ = "users"
 
@@ -19,13 +18,28 @@ class User(db.Model):
     def __repr__(self):
         return "<User %r>" % self.username
 
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+    
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
+
 
 class Post(db.Model):
     __tablename__ = "posts"
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey=("users.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
     user = db.relationship("User", foreign_keys=user_id)
 
@@ -41,8 +55,8 @@ class Follow(db.Model):
     __tablename__ = "follow"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey=("users.id"))
-    follower_id = db.Column(db.Integer, db.ForeignKey=("users.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    follower_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
     user = db.relationship("User", foreign_keys=user_id)
     follower = db.relationship("User", foreign_keys=follower_id)
